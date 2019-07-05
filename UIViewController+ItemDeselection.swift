@@ -12,7 +12,7 @@ extension UIViewController {
     public func deselectRowUsingTransitionCoordinator(in tableView: UITableView) {
         // Get the initially selected index paths, if any
         let selectedIndexPaths = tableView.indexPathsForSelectedRows ?? []
-        
+
         // Grab the transition coordinator responsible for the current transition
         if let coordinator = transitionCoordinator {
             coordinator.animate(alongsideTransition: { context in
@@ -27,11 +27,11 @@ extension UIViewController {
             }
         }
     }
-    
+
     public func deselectItemUsingTransitionCoordinator(in collectionView: UICollectionView) {
         // Get the initially selected index paths, if any
         let selectedIndexPaths = collectionView.indexPathsForSelectedItems ?? []
-        
+
         // Grab the transition coordinator responsible for the current transition
         if let coordinator = transitionCoordinator {
             coordinator.animate(alongsideTransition: { context in

@@ -184,22 +184,22 @@ extension ConstraintCollection {
         }
     }
 
-    public func pinAsLeftBarButtonItem(to view: UIView?) -> ConstraintCollection {
+    public func pinAsLeftBarButtonItem(to view: UIView?, margin: CGFloat = 0.0) -> ConstraintCollection {
         guard let view = view else { return self }
         return with {
             [
                 $0.centerYAnchor.constraint(equalTo: view.compatibleSafeLayoutGuideTopAnchor, constant: 22.0),
-                $0.leftAnchor.constraint(equalTo: view.compatibleSafeLayoutGuideLeftAnchor, constant: Constants.margin)
+                $0.leftAnchor.constraint(equalTo: view.compatibleSafeLayoutGuideLeftAnchor, constant: margin)
             ]
         }
     }
 
-    public func pinAsRightBarButtonItem(to view: UIView?) -> ConstraintCollection {
+    public func pinAsRightBarButtonItem(to view: UIView?, margin: CGFloat = 0.0) -> ConstraintCollection {
         guard let view = view else { return self }
         return with {
             [
                 $0.centerYAnchor.constraint(equalTo: view.compatibleSafeLayoutGuideTopAnchor, constant: 22.0),
-                $0.rightAnchor.constraint(equalTo: view.compatibleSafeLayoutGuideRightAnchor, constant: -Constants.margin)
+                $0.rightAnchor.constraint(equalTo: view.compatibleSafeLayoutGuideRightAnchor, constant: -margin)
             ]
         }
     }

@@ -17,28 +17,28 @@ private enum UIContentContainerSizeClassHelpersKeys {
 public struct ResolutionSizeClasses: Hashable {
     public let horizontal: UIUserInterfaceSizeClass
     public let vertical: UIUserInterfaceSizeClass
-    
+
     public init(traitCollection: UITraitCollection) {
         self.horizontal = traitCollection.horizontalSizeClass
         self.vertical = traitCollection.verticalSizeClass
     }
-    
+
     public init(_ horizontal: UIUserInterfaceSizeClass, _ vertical: UIUserInterfaceSizeClass) {
         self.horizontal = horizontal
         self.vertical = vertical
     }
-    
+
     public static var `default`: ResolutionSizeClasses {
         return ResolutionSizeClasses(.unspecified, .unspecified)
     }
-    
+
     public static var regularWidth: ResolutionSizeClasses {
         return ResolutionSizeClasses(.regular, .unspecified)
     }
 }
 
 public extension UITraitCollection {
-    public func resolutionSizeClasses() -> ResolutionSizeClasses {
+    func resolutionSizeClasses() -> ResolutionSizeClasses {
         return ResolutionSizeClasses(traitCollection: self)
     }
 }
@@ -60,11 +60,11 @@ private extension Dictionary where Key == ResolutionSizeClasses, Value == [NSLay
             }
             return true
         }
-        
+
         let sizeClassesSorted = sorted { (keyValues1, keyValues2) -> Bool in
             return isMoreSpecificThan(a: keyValues1.key, b: keyValues2.key)
         }
-        
+
         var isSpecificMatcherFound = false
         sizeClassesSorted.forEach { (key, value) in
             switch (key.horizontal, key.vertical) {
@@ -104,24 +104,24 @@ public extension UITraitEnvironment {
             return objc_getAssociatedObject(self, &UIContentContainerSizeClassHelpersKeys.sizeClassBasedConstraints) as? [SizeClassBasedConstraints]
         }
     }
-    
-    public func install(sizeClassConstraintCollections: SizeClassBasedConstraintCollections) {
+
+    func install(sizeClassConstraintCollections: SizeClassBasedConstraintCollections) {
         let newConstraints = sizeClassConstraintCollections.mapValues { $0.flatMap { $0.build() } }
         install(sizeClassConstraints: newConstraints)
     }
-    
-    public func install(sizeClassConstraints: SizeClassBasedConstraints) {
+
+    func install(sizeClassConstraints: SizeClassBasedConstraints) {
         var currentConstraints = sizeClassBasedConstraints ?? []
         currentConstraints.append(sizeClassConstraints)
         sizeClassBasedConstraints = currentConstraints
     }
-    
-    public func applySizeClassConstraints(for traitCollection: UITraitCollection) {
+
+    func applySizeClassConstraints(for traitCollection: UITraitCollection) {
         guard let sizeClasses = sizeClassBasedConstraints else { return }
         sizeClasses.forEach { $0.toggle(using: traitCollection) }
     }
 
-    public var isUserInterfaceSizeClassesRegular: Bool {
+    var isUserInterfaceSizeClassesRegular: Bool {
         return traitCollection.horizontalSizeClass == .regular
     }
 }
@@ -149,7 +149,7 @@ extension BaseViewController {
             return objc_getAssociatedObject(self, &UIContentContainerSizeClassHelpersKeys.willTransitionToNewTraitCollectionListeners) as? ((UITraitCollection, UIViewControllerTransitionCoordinator) -> ())
         }
     }
-    
+
     private var traitCollectionDidChangeListener: ((UITraitCollection?) -> ())? {
         set {
             objc_setAssociatedObject(self, &UIContentContainerSizeClassHelpersKeys.traitCollectionDidChangeListeners, newValue, .OBJC_ASSOCIATION_RETAIN)
@@ -158,17 +158,17 @@ extension BaseViewController {
             return objc_getAssociatedObject(self, &UIContentContainerSizeClassHelpersKeys.traitCollectionDidChangeListeners) as? ((UITraitCollection?) -> ())
         }
     }
-    
+
     public func install(sizeClassConstraintCollections: SizeClassBasedConstraintCollections) {
         view.install(sizeClassConstraintCollections: sizeClassConstraintCollections)
         subscribeToListeners()
     }
-    
+
     public func install(sizeClassConstraints: SizeClassBasedConstraints) {
         view.install(sizeClassConstraints: sizeClassConstraints)
         subscribeToListeners()
     }
-    
+
     private func subscribeToListeners() {
         if willTransitionToNewTraitCollectionListener == nil {
             let listener: ((UITraitCollection, UIViewControllerTransitionCoordinator) -> ()) = { [weak self] traitCollection, coordinator in
@@ -179,7 +179,7 @@ extension BaseViewController {
             willTransitionToNewTraitCollectionListener = listener
             addWillTransitionToNewTraitCollectionListeners(callback: listener)
         }
-        
+
         if traitCollectionDidChangeListener == nil {
             let listener: ((UITraitCollection?) -> ()) = { [weak self] _ in
                 guard let self = self else { return }
@@ -189,7 +189,7 @@ extension BaseViewController {
             addTraitCollectionDidChangeListeners(callback: listener)
         }
     }
-    
+
     public func applySizeClassConstraints(for traitCollection: UITraitCollection) {
         view.applySizeClassConstraints(for: traitCollection)
         if let provider = self as? SizeClassConstraintsProviding {
